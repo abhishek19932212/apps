@@ -15,7 +15,7 @@ Resources:
       LaunchTemplateData: 
         CreditSpecification: 
           CpuCredits: Unlimited
-        ImageId: ami-0a5782214cbc5495a
+        ImageId: ami-089618304e65b26ac
         InstanceType: t2.micro
   myASG:
     Type: AWS::AutoScaling::AutoScalingGroup
@@ -28,4 +28,4 @@ Resources:
         Version: !Ref myLaunchTemplateVersionNumber
       VPCZoneIdentifier: !Ref Subnets
       TargetGroupARNs: 
-        - arn:aws:elasticloadbalancing:us-west-2:162022628823:targetgroup/test-TG/987a53477d79a687
+        - arn:aws:elasticloadbalancing:us-west-2:162022628823:targetgroup/test-ALB-TG/2c9dca99388864f8
