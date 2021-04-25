@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Submit Stack') {
             steps {
-            sh "aws cloudformation deploy --template-file ./sampleec2.json --stack-name my-new-stack --parameter-overrides file://parameters.json --region 'us-west-2'"    
+            sh "aws cloudformation create-stack --stack-name jenkins-node-stack --template-body file://sampleec2.json --region 'us-west-2'"    
               }
              }
             }
