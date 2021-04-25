@@ -1,10 +1,6 @@
 [
-              "Parameters": {
-                  "Key1": "myLaunchTemplateVersionNumber",
-                  "Key2": “1”
-              },
-              "Parameters": {
-                  "Key1": “Subnets”,
-                  "Key2": “subnet-13ad7f59,subnet-a040f1d8”
-              }
+{
+  "myLaunchTemplateVersionNumber" : "1",
+  "Subnets" : “subnet-13ad7f59,subnet-a040f1d8"
+}
 ]
