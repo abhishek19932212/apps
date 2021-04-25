@@ -6,8 +6,10 @@ Parameters:
     Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
   myLaunchTemplateVersionNumber:
     Type: String
+    Default: 1
   Subnets:
     Type: CommaDelimitedList
+    Default: 'subnet-13ad7f59,subnet-a040f1d8,subnet-74ed6e29,subnet-9e4f74b5'
 Resources:
   myLaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
