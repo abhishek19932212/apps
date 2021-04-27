@@ -38,10 +38,10 @@ Resources:
         #!/bin/sh
         cat <<'EOF' > /etc/apache2/sites-available/planhub-frontend-waf.conf
         <VirtualHost *:80>
-	      ServerName qa1.planhub.com
-	      ServerAlias qa1.planhub.com
-	      DocumentRoot /var/www/html/frontend-planhub-new/dist
-	      ErrorLog ${APACHE_LOG_DIR}/error.log
+	ServerName qa1.planhub.com
+	ServerAlias qa1.planhub.com
+	DocumentRoot /var/www/html/frontend-planhub-new/dist
+	ErrorLog ${APACHE_LOG_DIR}/error.log
       	CustomLog ${APACHE_LOG_DIR}/access.log cloudwatch
         RewriteEngine On
         RewriteCond %{HTTP:X-Forwarded-Proto} =http
