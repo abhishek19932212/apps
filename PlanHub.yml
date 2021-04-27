@@ -36,21 +36,23 @@ Resources:
       UserData: 
        Fn::Base64: |
         #!/bin/sh
-        cat <<'EOF' > /etc/apache2/sites-available/planhub-frontend.conf
+        cat <<'EOF' > /etc/apache2/sites-available/planhub-frontend-waf.conf
         <VirtualHost *:80>
-        ServerName qa.planhub.com
-        ServerAlias qa.planhub.com
-        DocumentRoot /var/www/html/planhub-frontend/dist
-        ErrorLog ${APACHE_LOG_DIR}/error.log
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
+	      ServerName qa1.planhub.com
+	      ServerAlias qa1.planhub.com
+	      DocumentRoot /var/www/html/frontend-planhub-new/dist
+	      ErrorLog ${APACHE_LOG_DIR}/error.log
+      	CustomLog ${APACHE_LOG_DIR}/access.log cloudwatch
         RewriteEngine On
-        RewriteCond%{HTTP:X-Forwarded-Proto} =http
+        RewriteCond %{HTTP:X-Forwarded-Proto} =http
         RewriteRule .* https://%{HTTP:Host}%{REQUEST_URI} [L,R=permanent]
         </VirtualHost>
         <VirtualHost *:443>
-        DocumentRoot /var/www/html/planhub-frontend/dist
-        ServerName qa.planhub.com
-        ServerAlias qa.planhub.com
+        DocumentRoot /var/www/html/frontend-planhub-new/dist
+        ServerName app.planhub.com
+        ServerAlias app.planhub.com
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log cloudwatch
         RewriteEngine On
         RewriteRule ^#/(.*)$ $1
         SSLEngine on
@@ -62,7 +64,7 @@ Resources:
         SSLProtocol all -SSLv2 -SSLv3
         SSLHonorCipherOrder on
         SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+S$
-        <Directory  /var/www/html/planhub-frontend>
+        <Directory  /var/www/html/frontend-planhub-new>
         AllowOverride All
         Require all granted
         RewriteEngine On
@@ -94,21 +96,23 @@ Resources:
         </IfModule>
         </VirtualHost>
         EOF
-        cat <<'EOF' > /etc/apache2/sites-available/planhub-api.conf
+        cat <<'EOF' > /etc/apache2/sites-available/planhub-frontend-waf.conf
         <VirtualHost *:80>
-        ServerName qaapi.planhub.com
-        ServerAlias qaapi.planhub.com
-        DocumentRoot /var/www/html/planhub-api/public
+        ServerName qa1.api.planhub.com
+        ServerAlias qa1.api.planhub.com 
+        DocumentRoot /var/www/html/api-planhub/public   
         ErrorLog ${APACHE_LOG_DIR}/error.log
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
+        CustomLog ${APACHE_LOG_DIR}/access.log cloudwatch
         RewriteEngine On
         RewriteCond %{HTTP:X-Forwarded-Proto} =http
         RewriteRule .* https://%{HTTP:Host}%{REQUEST_URI} [L,R=permanent]
         </VirtualHost>
         <VirtualHost *:443>
-        DocumentRoot /var/www/html/planhub-api/public
-        ServerName qaapi.planhub.com
-        ServerAlias qaapi.planhub.com
+        DocumentRoot /var/www/html/api-planhub/public
+        ServerName api.planhub.com
+        ServerAlias api.planhub.com
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log cloudwatch
         SSLEngine on
         SSLCertificateFile /etc/apache2/ssl/NEW_STAR_planhub_com.crt
         SSLCertificateKeyFile /etc/apache2/ssl/new_star.planhub.com.key
@@ -118,7 +122,7 @@ Resources:
         SSLProtocol all -SSLv2 -SSLv3
         SSLHonorCipherOrder on
         SSLCipherSuite "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+S$
-        <Directory /var/www/html/planhub-api/public>
+        <Directory /var/www/html/api-planhub/public>
         AllowOverride All
         Options Indexes FollowSymLinks
         Require all granted
