@@ -1,0 +1,57 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  VPC:
+    Description: Default VPC.
+    Type: 'AWS::EC2::VPC::Id'
+    Default: vpc-0142451af7ba23d4f
+Resources:
+  SecurityGroupDemoSvrTraffic:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupName: EC2Demoserver-SG
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          CidrIp: 0.0.0.0/0
+      GroupDescription: Security Group for demo server
+      VpcId: !Ref VPC
+  EC2InstanceDemoSvr:
+    Type: 'AWS::EC2::Instance'
+    DependsOn: SecurityGroupDemoSvrTraffic
+    Properties:
+      AvailabilityZone: us-west-2a
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            DeleteOnTermination: 'true'
+            VolumeSize: '8'
+            VolumeType: gp2
+      ImageId: ami-03d5c68bab01f3496
+      InstanceType: t2.micro
+      KeyName: jenkins-node
+      UserData:  
+       Fn::Base64: |
+        #!/bin/sh
+        sudo apt-get -y update
+        sudo apt-get -y upgrade
+        sudo apt-get -y install default-jre
+        sudo grep -q "^[^#]*PasswordAuthentication" /etc/ssh/sshd_config && sed -i "/^[^#]*PasswordAuthentication[[:space:]]no/c\PasswordAuthentication yes" /etc/ssh/sshd_config || echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
+        sudo service sshd restart
+        sudo adduser jenkins --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
+        echo "jenkins:admin123" | sudo chpasswd
+      NetworkInterfaces:
+        - Description: Primary network interface
+          DeviceIndex: '0'
+          SubnetId: subnet-0d52d8154071b5856
+          PrivateIpAddress: 172.32.1.155
+          GroupSet:
+            - !Ref SecurityGroupDemoSvrTraffic
