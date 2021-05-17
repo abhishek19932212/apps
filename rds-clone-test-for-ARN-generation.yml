@@ -1,0 +1,47 @@
+Parameters:
+  InstanceType:
+    Type: String
+    Default: db.r5.large
+  VPC:
+    Description: Default VPC.
+    Type: 'AWS::EC2::VPC::Id'
+    Default: vpc-0273bb94348e4e22f
+Resources:
+  CommandRunner:
+      Type: AWSUtility::CloudFormation::CommandRunner
+      Properties:
+         Command: aws s3 ls | sed -n 1p | cut -d " " -f3 > /command-output.txt
+  SecurityGroupDB:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupName: qa-clone-SG1
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0
+          Description: For traffic from Internet
+      GroupDescription: Security Group for demo server
+      VpcId: !Ref VPC
+  DBCluster:
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Snapshot
+    Type: 'AWS::RDS::DBCluster'
+    Properties:
+      Engine: aurora-mysql
+      SnapshotIdentifier: !Ref 
+      
+      DBSubnetGroupName: default-vpc-0273bb94348e4e22f
+      DBClusterIdentifier: qaauroraplanhub-clone-cluster1
+      VpcSecurityGroupIds:
+        - !Ref SecurityGroupDB
+  DBInstance:
+    Type: 'AWS::RDS::DBInstance'
+    DependsOn: DBCluster
+    Properties:
+      DBClusterIdentifier: !Ref DBCluster
+      DBSubnetGroupName: default-vpc-0273bb94348e4e22f
+      Engine: aurora-mysql
+      DBInstanceClass: !Ref InstanceType
+      DBInstanceIdentifier: auroraqaplanhub-instance1
+      PubliclyAccessible: true
