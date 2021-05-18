@@ -2,7 +2,7 @@ Parameters:
   VPC:
     Description: Default VPC.
     Type: 'AWS::EC2::VPC::Id'
-    Default: vpc-3078ce4d
+    Default: vpc-afb094d7
 Resources:
   SecurityGroupDemoSvrTraffic:
     Type: 'AWS::EC2::SecurityGroup'
